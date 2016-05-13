@@ -17,7 +17,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE. */
 (function() {
   'use strict';
-  
+
   var VimeoState = {
     UNSTARTED: -1,
     ENDED: 0,
@@ -38,27 +38,27 @@ THE SOFTWARE. */
       // Parent is not set yet so we have to wait a tick
       setTimeout(function() {
         this.el_.parentNode.className += ' vjs-vimeo';
-        
+
         if (Vimeo.isApiReady) {
           this.initPlayer();
         } else {
           Vimeo.apiReadyQueue.push(this);
         }
       }.bind(this));
-      
+
     },
-    
+
     dispose: function() {
       this.el_.parentNode.className = this.el_.parentNode.className.replace(' vjs-vimeo', '');
     },
-    
+
     createEl: function() {
       this.vimeo = {};
       this.vimeoInfo = {};
       this.baseUrl = 'https://player.vimeo.com/video/';
       this.baseApiUrl = 'http://www.vimeo.com/api/v2/video/';
       this.videoId = Vimeo.parseUrl(this.options_.source.src).videoId;
-      
+
       this.iframe = document.createElement('iframe');
       this.iframe.setAttribute('id', this.options_.techId);
       this.iframe.setAttribute('title', 'Vimeo Video Player');
@@ -88,7 +88,7 @@ THE SOFTWARE. */
 
         divWrapper.appendChild(divBlocker);
       }
-      
+
       if(this.options_.poster == "" && this.videoId != null) {
         $.getJSON(this.baseApiUrl + this.videoId + '.json?callback=?', {format: "json"}, (function(_this){
           return function(data) {
@@ -100,10 +100,10 @@ THE SOFTWARE. */
 
       return divWrapper;
     },
-    
+
     initPlayer: function() {
       var self = this;
-      
+
       $(self.iframe).load(function(){
         var vimeoVideoID = Vimeo.parseUrl(self.options_.source.src).videoId;
         //load vimeo
@@ -111,9 +111,9 @@ THE SOFTWARE. */
           self.vimeo.api('unload');
           delete self.vimeo;
         }
-        
+
         self.vimeo = $f(self.iframe);
-        
+
         self.vimeoInfo = {
           state: VimeoState.UNSTARTED,
           volume: 1,
@@ -138,9 +138,9 @@ THE SOFTWARE. */
 
         });
       });
-      
+
     },
-    
+
     onReady: function(){
       this.playerReady_ = true;
       this.triggerReady();
@@ -150,7 +150,7 @@ THE SOFTWARE. */
         this.startMuted = false;
       }
     },
-    
+
     onLoadProgress: function(data) {
       var durationUpdate = !this.vimeoInfo.duration;
       this.vimeoInfo.duration = data.duration;
@@ -184,7 +184,7 @@ THE SOFTWARE. */
       this.error = error;
       this.trigger('error');
     },
-    
+
     error: function() {
       switch (this.errorNumber) {
         case 2:
@@ -203,7 +203,7 @@ THE SOFTWARE. */
 
       return { code: 'Vimeo unknown error (' + this.errorNumber + ')' };
     },
-    
+
     src: function() {
       return this.source;
     },
@@ -244,11 +244,11 @@ THE SOFTWARE. */
         }
       }
     },
-    
+
     supportsFullScreen: function() {
       return true;
     },
-    
+
     //TRIGGER
     load : function(){},
     play : function(){ this.vimeo.api('play'); },
@@ -302,7 +302,7 @@ THE SOFTWARE. */
               _uri = data[0].thumbnail_large;
             };
           })(uri));
-          
+
           var image = new Image();
           image.onload = function(){
             // Onload thumbnail
@@ -357,8 +357,8 @@ THE SOFTWARE. */
               '.vjs-vimeo { overflow: hidden }' +
               '.vjs-vimeo .vjs-iframe-blocker { display: none; }' +
               '.vjs-vimeo.vjs-user-inactive .vjs-iframe-blocker { display: block; }' +
-              '.vjs-vimeo .vjs-poster { background-size: cover; }' +
-              '.vimeoplayer {display:block; width:638px; height:558px; margin:0 auto;margin-top:-150px;}';
+              '.vjs-vimeo { height:100%; }' +
+              '.vimeoplayer { width:100%; height:180%; position:absolute; left:0; top:-40%; }';
 
     var head = document.head || document.getElementsByTagName('head')[0];
 
@@ -388,9 +388,9 @@ THE SOFTWARE. */
   vimeoIframeAPIReady();
 
   videojs.registerTech('Vimeo', Vimeo);
-  
-  
-  
+
+
+
   // Froogaloop API -------------------------------------------------------------
 
   // From https://github.com/vimeo/player-api/blob/master/javascript/froogaloop.js
@@ -655,4 +655,3 @@ THE SOFTWARE. */
 
   })();
 })();
-
